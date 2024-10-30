@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/breeze/compare/v2.2.3...2.x)
+## [Unreleased](https://github.com/laravel/breeze/compare/v2.2.4...2.x)
+
+## [v2.2.4](https://github.com/laravel/breeze/compare/v2.2.3...v2.2.4) - 2024-10-29
+
+* fix(sanctum): add 127.0.0.1:3000 for proper API auth during local development with 127.0.0.1:3000 by [@ShahAlamShaikat](https://github.com/ShahAlamShaikat) in https://github.com/laravel/breeze/pull/431
+* Using the translate function instead of a static value by [@ashkanfekridev](https://github.com/ashkanfekridev) in https://github.com/laravel/breeze/pull/432
 
 ## [v2.2.3](https://github.com/laravel/breeze/compare/v2.2.2...v2.2.3) - 2024-10-17
 
