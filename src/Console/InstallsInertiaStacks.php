@@ -34,16 +34,14 @@ trait InstallsInertiaStacks
             ] + $packages;
         });
 
-        if ($this->option('typescript')) {
-            $this->updateNodePackages(function ($packages) {
-                return [
+        $this->updateNodePackages(function ($packages) {
+            return [
                     '@types/node' => '^18.13.0',
                     '@types/react' => '^18.0.28',
                     '@types/react-dom' => '^18.0.10',
                     'typescript' => '^5.0.2',
                 ] + $packages;
-            });
-        }
+        });
 
         if ($this->option('eslint')) {
             $this->updateNodePackages(function ($packages) {
@@ -59,30 +57,20 @@ trait InstallsInertiaStacks
                 ] + $packages;
             });
 
-            if ($this->option('typescript')) {
-                $this->updateNodePackages(function ($packages) {
-                    return [
+            $this->updateNodePackages(function ($packages) {
+                return [
                         '@typescript-eslint/eslint-plugin' => '^7.16.0',
                         '@typescript-eslint/parser' => '^7.16.0',
                     ] + $packages;
-                });
+            });
 
-                $this->updateNodeScripts(function ($scripts) {
-                    return $scripts + [
+            $this->updateNodeScripts(function ($scripts) {
+                return $scripts + [
                         'lint' => 'eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix',
                     ];
-                });
+            });
 
-                copy(__DIR__.'/../../stubs/inertia-react-ts/.eslintrc.json', base_path('.eslintrc.json'));
-            } else {
-                $this->updateNodeScripts(function ($scripts) {
-                    return $scripts + [
-                        'lint' => 'eslint resources/js --ext .js,.jsx --ignore-path .gitignore --fix',
-                    ];
-                });
-
-                copy(__DIR__.'/../../stubs/inertia-react/.eslintrc.json', base_path('.eslintrc.json'));
-            }
+            copy(__DIR__.'/../../stubs/inertia-react-ts/.eslintrc.json', base_path('.eslintrc.json'));
 
             copy(__DIR__.'/../../stubs/inertia-common/.prettierrc', base_path('.prettierrc'));
         }
@@ -117,16 +105,10 @@ trait InstallsInertiaStacks
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages'));
 
-        if ($this->option('typescript')) {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', resource_path('js/Components'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Layouts', resource_path('js/Layouts'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Pages', resource_path('js/Pages'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types', resource_path('js/types'));
-        } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Components', resource_path('js/Components'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Layouts', resource_path('js/Layouts'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Pages', resource_path('js/Pages'));
-        }
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', resource_path('js/Components'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Layouts', resource_path('js/Layouts'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Pages', resource_path('js/Pages'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types', resource_path('js/types'));
 
         if (! $this->option('dark')) {
             $this->removeDarkClasses((new Finder)
@@ -157,24 +139,17 @@ trait InstallsInertiaStacks
         copy(__DIR__.'/../../stubs/inertia-common/tailwind.config.js', base_path('tailwind.config.js'));
         copy(__DIR__.'/../../stubs/inertia-react/vite.config.js', base_path('vite.config.js'));
 
-        if ($this->option('typescript')) {
-            copy(__DIR__.'/../../stubs/inertia-react-ts/tsconfig.json', base_path('tsconfig.json'));
-            copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/app.tsx', resource_path('js/app.tsx'));
+        copy(__DIR__.'/../../stubs/inertia-react-ts/tsconfig.json', base_path('tsconfig.json'));
+        copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/app.tsx', resource_path('js/app.tsx'));
 
-            if (file_exists(resource_path('js/bootstrap.js'))) {
-                rename(resource_path('js/bootstrap.js'), resource_path('js/bootstrap.ts'));
-            }
-
-            $this->replaceInFile('"vite build', '"tsc && vite build', base_path('package.json'));
-            $this->replaceInFile('.jsx', '.tsx', base_path('vite.config.js'));
-            $this->replaceInFile('.jsx', '.tsx', resource_path('views/app.blade.php'));
-            $this->replaceInFile('.vue', '.tsx', base_path('tailwind.config.js'));
-        } else {
-            copy(__DIR__.'/../../stubs/inertia-common/jsconfig.json', base_path('jsconfig.json'));
-            copy(__DIR__.'/../../stubs/inertia-react/resources/js/app.jsx', resource_path('js/app.jsx'));
-
-            $this->replaceInFile('.vue', '.jsx', base_path('tailwind.config.js'));
+        if (file_exists(resource_path('js/bootstrap.js'))) {
+            rename(resource_path('js/bootstrap.js'), resource_path('js/bootstrap.ts'));
         }
+
+        $this->replaceInFile('"vite build', '"tsc && vite build', base_path('package.json'));
+        $this->replaceInFile('.jsx', '.tsx', base_path('vite.config.js'));
+        $this->replaceInFile('.jsx', '.tsx', resource_path('views/app.blade.php'));
+        $this->replaceInFile('.vue', '.tsx', base_path('tailwind.config.js'));
 
         if (file_exists(resource_path('js/app.js'))) {
             unlink(resource_path('js/app.js'));
@@ -209,15 +184,9 @@ trait InstallsInertiaStacks
      */
     protected function installInertiaReactSsrStack()
     {
-        if ($this->option('typescript')) {
-            copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/ssr.tsx', resource_path('js/ssr.tsx'));
-            $this->replaceInFile("input: 'resources/js/app.tsx',", "input: 'resources/js/app.tsx',".PHP_EOL."            ssr: 'resources/js/ssr.tsx',", base_path('vite.config.js'));
-            $this->configureReactHydrateRootForSsr(resource_path('js/app.tsx'));
-        } else {
-            copy(__DIR__.'/../../stubs/inertia-react/resources/js/ssr.jsx', resource_path('js/ssr.jsx'));
-            $this->replaceInFile("input: 'resources/js/app.jsx',", "input: 'resources/js/app.jsx',".PHP_EOL."            ssr: 'resources/js/ssr.jsx',", base_path('vite.config.js'));
-            $this->configureReactHydrateRootForSsr(resource_path('js/app.jsx'));
-        }
+        copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/ssr.tsx', resource_path('js/ssr.tsx'));
+        $this->replaceInFile("input: 'resources/js/app.tsx',", "input: 'resources/js/app.tsx',".PHP_EOL."            ssr: 'resources/js/ssr.tsx',", base_path('vite.config.js'));
+        $this->configureReactHydrateRootForSsr(resource_path('js/app.tsx'));
 
         $this->configureZiggyForSsr();
 
@@ -297,33 +266,31 @@ trait InstallsInertiaStacks
             app_path('Http/Middleware/HandleInertiaRequests.php')
         );
 
-        if ($this->option('typescript')) {
-            $this->replaceInFile(
-                <<<'EOT'
+        $this->replaceInFile(
+            <<<'EOT'
                 export interface User {
                 EOT,
-                <<<'EOT'
+            <<<'EOT'
                 import { Config } from 'ziggy-js';
 
                 export interface User {
                 EOT,
-                resource_path('js/types/index.d.ts')
-            );
+            resource_path('js/types/index.d.ts')
+        );
 
-            $this->replaceInFile(
-                <<<'EOT'
+        $this->replaceInFile(
+            <<<'EOT'
                     auth: {
                         user: User;
                     };
                 EOT,
-                <<<'EOT'
+            <<<'EOT'
                     auth: {
                         user: User;
                     };
                     ziggy: Config & { location: string };
                 EOT,
-                resource_path('js/types/index.d.ts')
-            );
-        }
+            resource_path('js/types/index.d.ts')
+        );
     }
 }

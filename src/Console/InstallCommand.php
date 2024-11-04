@@ -29,11 +29,9 @@ class InstallCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $signature = 'breeze:install {stack : The development stack that should be installed (blade,livewire,livewire-functional,react,vue,api)}
-                            {--dark : Indicate that dark mode support should be installed}
+    protected $signature = 'breeze:install {stack : The development stack that should be installed (react)}
                             {--pest : Indicate that Pest should be installed}
                             {--ssr : Indicates if Inertia SSR support should be installed}
-                            {--typescript : Indicates if TypeScript is preferred for the Inertia stack}
                             {--eslint : Indicates if ESLint with Prettier should be installed}
                             {--composer=global : Absolute path to the Composer binary which should be used to install packages}';
 
@@ -355,12 +353,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             'stack' => fn () => select(
                 label: 'Which Breeze stack would you like to install?',
                 options: [
-                    'blade' => 'Blade with Alpine',
-                    'livewire' => 'Livewire (Volt Class API) with Alpine',
-                    'livewire-functional' => 'Livewire (Volt Functional API) with Alpine',
-                    'react' => 'React with Inertia',
-                    'vue' => 'Vue with Inertia',
-                    'api' => 'API only',
+                    'react' => 'React with Inertia'
                 ],
                 scroll: 6,
             ),
@@ -374,25 +367,14 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     protected function afterPromptingForMissingArguments(InputInterface $input, OutputInterface $output)
     {
-        $stack = $input->getArgument('stack');
-
-        if (in_array($stack, ['react', 'vue'])) {
-            collect(multiselect(
-                label: 'Would you like any optional features?',
-                options: [
-                    'dark' => 'Dark mode',
-                    'ssr' => 'Inertia SSR',
-                    'typescript' => 'TypeScript',
-                    'eslint' => 'ESLint with Prettier',
-                ],
-                hint: 'Use the space bar to select options.'
-            ))->each(fn ($option) => $input->setOption($option, true));
-        } elseif (in_array($stack, ['blade', 'livewire', 'livewire-functional'])) {
-            $input->setOption('dark', confirm(
-                label: 'Would you like dark mode support?',
-                default: false
-            ));
-        }
+        collect(multiselect(
+            label: 'Would you like any optional features?',
+            options: [
+                'ssr' => 'Inertia SSR',
+                'eslint' => 'ESLint with Prettier',
+            ],
+            hint: 'Use the space bar to select options.'
+        ))->each(fn ($option) => $input->setOption($option, true));
 
         $input->setOption('pest', select(
             label: 'Which testing framework do you prefer?',
