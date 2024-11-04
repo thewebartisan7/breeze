@@ -22,7 +22,7 @@ use function Laravel\Prompts\select;
 #[AsCommand(name: 'breeze:install')]
 class InstallCommand extends Command implements PromptsForMissingInput
 {
-    use InstallsApiStack, InstallsBladeStack, InstallsInertiaStacks, InstallsLivewireStack;
+    use InstallsInertiaStacks;
 
     /**
      * The name and signature of the console command.
@@ -51,23 +51,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
-        if ($this->argument('stack') === 'vue') {
-            return $this->installInertiaVueStack();
-        } elseif ($this->argument('stack') === 'react') {
-            return $this->installInertiaReactStack();
-        } elseif ($this->argument('stack') === 'api') {
-            return $this->installApiStack();
-        } elseif ($this->argument('stack') === 'blade') {
-            return $this->installBladeStack();
-        } elseif ($this->argument('stack') === 'livewire') {
-            return $this->installLivewireStack();
-        } elseif ($this->argument('stack') === 'livewire-functional') {
-            return $this->installLivewireStack(true);
-        }
-
-        $this->components->error('Invalid stack. Supported stacks are [blade], [livewire], [livewire-functional], [react], [vue], and [api].');
-
-        return 1;
+        return $this->installInertiaReactStack();
     }
 
     /**
@@ -79,12 +63,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
     {
         (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature'));
 
-        $stubStack = match ($this->argument('stack')) {
-            'api' => 'api',
-            'livewire' => 'livewire-common',
-            'livewire-functional' => 'livewire-common',
-            default => 'default',
-        };
+        $stubStack = 'default';
 
         if ($this->option('pest') || $this->isUsingPest()) {
             if ($this->hasComposerPackage('phpunit/phpunit')) {
