@@ -110,14 +110,6 @@ trait InstallsInertiaStacks
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Pages', resource_path('js/Pages'));
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types', resource_path('js/types'));
 
-        if (! $this->option('dark')) {
-            $this->removeDarkClasses((new Finder)
-                ->in(resource_path('js'))
-                ->name(['*.jsx', '*.tsx'])
-                ->notName(['Welcome.jsx', 'Welcome.tsx'])
-            );
-        }
-
         // Tests...
         if (! $this->installTests()) {
             return 1;

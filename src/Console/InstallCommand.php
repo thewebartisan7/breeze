@@ -49,7 +49,8 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
-        return $this->installInertiaReactStack();
+        $this->components->info('Hello world.');
+        // return $this->installInertiaReactStack();
     }
 
     /**
@@ -328,18 +329,6 @@ class InstallCommand extends Command implements PromptsForMissingInput
         $process->run(function ($type, $line) {
             $this->output->write('    '.$line);
         });
-    }
-
-    /**
-     * Remove Tailwind dark classes from the given files.
-     *
-     * @return void
-     */
-    protected function removeDarkClasses(Finder $finder)
-    {
-        foreach ($finder as $file) {
-            file_put_contents($file->getPathname(), preg_replace('/\sdark:[^\s"\']+/', '', $file->getContents()));
-        }
     }
 
     /**
