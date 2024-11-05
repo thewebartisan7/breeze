@@ -49,8 +49,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
-        $this->components->info('Hello world.');
-        // return $this->installInertiaReactStack();
+        return $this->installInertiaReactStack();
     }
 
     /**
@@ -62,8 +61,6 @@ class InstallCommand extends Command implements PromptsForMissingInput
     {
         (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature'));
 
-        $stubStack = 'default';
-
         if ($this->option('pest') || $this->isUsingPest()) {
             if ($this->hasComposerPackage('phpunit/phpunit')) {
                 $this->removeComposerPackages(['phpunit/phpunit'], true);
@@ -73,11 +70,11 @@ class InstallCommand extends Command implements PromptsForMissingInput
                 return false;
             }
 
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Feature', base_path('tests/Feature'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Unit', base_path('tests/Unit'));
-            (new Filesystem)->copy(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Pest.php', base_path('tests/Pest.php'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/pest-tests/Feature', base_path('tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/pest-tests/Unit', base_path('tests/Unit'));
+            (new Filesystem)->copy(__DIR__.'/../../stubs/default/pest-tests/Pest.php', base_path('tests/Pest.php'));
         } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/tests/Feature', base_path('tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/tests/Feature', base_path('tests/Feature'));
         }
 
         return true;
